@@ -1,5 +1,7 @@
 package com.ps;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -33,6 +35,7 @@ public class UserInterface {
             System.out.println("7) Get by all");
             System.out.println("8) Add vehicle");
             System.out.println("9) Remove vehicle");
+            System.out.println("10) Sell/Lease a Vehicle");
             System.out.println("0) Exit");
 
             System.out.print("Command: ");
@@ -66,6 +69,9 @@ public class UserInterface {
                 case 9:
                     processRemoveVehicleRequest();
                     break;
+                case 10:
+                    processSaleLeaseVehicle();
+                    break;
                 case 0:
                     System.out.println("Exiting...");
                     break;
@@ -75,6 +81,8 @@ public class UserInterface {
 
         }while(mainMenuCommand != 0);
     }
+
+
 
     private void processGetByPriceRequest(){
         System.out.println("----Display Vehicle by Price----");
@@ -215,6 +223,56 @@ public class UserInterface {
 
     }
 
+    private void processSaleLeaseVehicle() {
+        System.out.println("----Sell/Lease a Vehicle----");
+
+        System.out.println("\n Available Vehicles:");
+        processGetAllVehiclesRequest();
+
+        LocalDate currentTime = LocalDate.now();
+         String vehicleSoldDate = contractDate(currentTime);
+
+        System.out.print("\n Enter Full Name: ");
+        String customerName =  scannerLine.nextLine().trim();
+
+        System.out.print("Enter Email: ");
+        String customerEmail = scannerLine.nextLine().trim();
+
+        System.out.print("Enter Vin: ");
+        int vin = scannerDigit.nextInt();
+
+        System.out.print("Lease or Sale: ");
+        String contractType = scannerLine.nextLine().toUpperCase();
+
+//        ContractFileManager.saveContract();
+
+//        contractVehicleRemoval(vin);
+
+
+    }
+
+    public void contractVehicleRemoval(int vin){
+        ArrayList<Vehicle> vehicles = dealership.getAllVehicles();
+
+        for(int i= 0; i < vehicles.size(); i++){
+            if( vin == vehicles.get(i).getVin()){
+                dealership.removeVehicle(vehicles.get(i));
+            }
+        }
+
+        DealershipFileManager.saveDealership(dealership);
+
+    }
+
+    public String contractDate(LocalDate currentTime ){
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+
+        return currentTime.format(formatter);
+
+
+    }
+
     public static void displayVehicles(ArrayList<Vehicle> vehicles){
 
         System.out.printf("\n%-10s %-10s %-10s %-10s %-15s %-10s %-10s %-10s%n",
@@ -231,10 +289,6 @@ public class UserInterface {
             System.out.print(vehicle);
         }
     }
-
-
-
-
 
 
 }

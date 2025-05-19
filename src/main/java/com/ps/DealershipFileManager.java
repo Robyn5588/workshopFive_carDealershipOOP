@@ -72,7 +72,7 @@ public class DealershipFileManager {
                 bufferedWriter.write(vehicleLine);
 
             }
-//
+
             bufferedWriter.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
