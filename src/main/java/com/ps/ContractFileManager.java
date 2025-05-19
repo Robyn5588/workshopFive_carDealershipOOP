@@ -26,7 +26,7 @@ public class ContractFileManager {
                         contract.getVehicleSold().getPrice(),
                         ((SalesContract) contract).getSalesTaxAmount(),
                         ((SalesContract) contract).getRecordingFee(),
-                        ((SalesContract) contract).getProccesingFee(),
+                        ((SalesContract) contract).getProcessingFee(),
                         contract.getTotalPrice(),
                         contract.getMonthlyPayment());
 

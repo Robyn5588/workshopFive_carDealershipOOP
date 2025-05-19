@@ -11,7 +11,7 @@ public class SalesContract extends Contract {
 
     public SalesContract(String dateOfContract, String customerName, String customerEmail, Vehicle vehicleSold, int processingFee, boolean finance) {
         super(dateOfContract, customerName, customerEmail, vehicleSold);
-        salesTaxAmount = 0.05;
+        salesTaxAmount = 0.05 * getVehicleSold().getPrice();
         recordingFee = 100;
         this.processingFee = processingFee;
         this.finance = finance;
@@ -22,31 +22,50 @@ public class SalesContract extends Contract {
     @Override
     public double getTotalPrice(){
 
-
         double totalPrice;
 
-        double originalPrice = getVehicleSold().getPrice();
-
-        salesTaxAmount *= originalPrice;
-
-
-
-        return totalPrice = salesTaxAmount + recordingFee + processingFee + originalPrice;
+        return totalPrice = salesTaxAmount + recordingFee + processingFee + originalPrice();
     }
 
     @Override
     public double getMonthlyPayment(){
-        return 0;
+
+        double interest;
+        int months;
+
+        if (finance){
+            if(originalPrice() >= 10_000 ) {
+                interest = 0.0425;
+                months = 48;
+            }else{
+                interest = 0.0525;
+                months = 24;
+
+            }
+
+            double moInterestRate = (interest/100) / 12;
+
+            double loanAmount = getTotalPrice();
+
+            double numerator = moInterestRate * Math.pow((1+moInterestRate), months);
+
+            double denominator = Math.pow((1+moInterestRate),(months-1));
+
+            double moPayment = loanAmount * numerator/denominator;
+
+            return moPayment;
+
+        }else{
+
+            return 0;
+        }
+
     }
 
-    public int getProccesingFee(){
-
-//        if(originalPrice < 10000){
-//            processingFee = 295;
-//        }else processingFee = 495;
-//
-        return 0; // processingFee;
+    public double originalPrice(){
+        return getVehicleSold().getPrice();
     }
+
 
     public boolean isFinance() {
         return finance;
@@ -57,6 +76,12 @@ public class SalesContract extends Contract {
     }
 
     public int getProcessingFee() {
+        double originalPrice = getVehicleSold().getPrice();
+
+        if(originalPrice < 10000){
+            processingFee = 295;
+        }else processingFee = 495;
+
         return processingFee;
     }
 
