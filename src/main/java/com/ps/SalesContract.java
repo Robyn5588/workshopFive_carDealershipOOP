@@ -1,7 +1,5 @@
 package com.ps;
 
-import java.util.ArrayList;
-
 public class SalesContract extends Contract {
 
     private double salesTaxAmount;
@@ -9,22 +7,18 @@ public class SalesContract extends Contract {
     private int processingFee;
     private boolean finance;
 
-    public SalesContract(String dateOfContract, String customerName, String customerEmail, Vehicle vehicleSold, int processingFee, boolean finance) {
+    public SalesContract(String dateOfContract, String customerName, String customerEmail, Vehicle vehicleSold, boolean finance) {
         super(dateOfContract, customerName, customerEmail, vehicleSold);
-        salesTaxAmount = 0.05 * getVehicleSold().getPrice();
-        recordingFee = 100;
-        this.processingFee = processingFee;
+        this.salesTaxAmount = 0.05 * getVehicleSold().getPrice();
+        this.recordingFee = 100;
+        this.processingFee = getProcessingFee();
         this.finance = finance;
     }
-
-
 
     @Override
     public double getTotalPrice(){
 
-        double totalPrice;
-
-        return totalPrice = salesTaxAmount + recordingFee + processingFee + originalPrice();
+        return salesTaxAmount + recordingFee + processingFee + originalPrice();
     }
 
     @Override
@@ -43,17 +37,15 @@ public class SalesContract extends Contract {
 
             }
 
-            double moInterestRate = (interest/100) / 12;
+            double moInterestRate = interest / 12;
 
             double loanAmount = getTotalPrice();
 
             double numerator = moInterestRate * Math.pow((1+moInterestRate), months);
 
-            double denominator = Math.pow((1+moInterestRate),(months-1));
+            double denominator = Math.pow((1 + moInterestRate), months) - 1;
 
-            double moPayment = loanAmount * numerator/denominator;
-
-            return moPayment;
+            return loanAmount * numerator/denominator;
 
         }else{
 
@@ -98,6 +90,7 @@ public class SalesContract extends Contract {
     }
 
     public double getSalesTaxAmount() {
+
         return salesTaxAmount;
     }
 

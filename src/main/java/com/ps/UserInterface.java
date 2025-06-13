@@ -230,7 +230,7 @@ public class UserInterface {
         processGetAllVehiclesRequest();
 
         LocalDate currentTime = LocalDate.now();
-         String vehicleSoldDate = contractDate(currentTime);
+        String vehicleSoldDate = contractDate(currentTime);
 
         System.out.print("\n Enter Full Name: ");
         String customerName =  scannerLine.nextLine().trim();
@@ -241,12 +241,45 @@ public class UserInterface {
         System.out.print("Enter Vin: ");
         int vin = scannerDigit.nextInt();
 
+        ArrayList<Vehicle> vehicles = dealership.getAllVehicles();
+        Vehicle vehicle = null;
+
+        for(int i= 0; i < vehicles.size(); i++){
+            if( vin == vehicles.get(i).getVin()){
+                vehicle = vehicles.get(i);
+            }
+        }
+
         System.out.print("Lease or Sale: ");
-        String contractType = scannerLine.nextLine().toUpperCase();
+        String contractType = scannerLine.nextLine().trim();
 
-//        ContractFileManager.saveContract();
+        if (contractType.equalsIgnoreCase("Lease")){
 
-//        contractVehicleRemoval(vin);
+            LeaseContract leaseContract = new LeaseContract(vehicleSoldDate, customerName,customerEmail, vehicle);
+            ContractFileManager.saveContract(leaseContract);
+            System.out.println("Contract Saved");
+            contractVehicleRemoval(vin);
+
+
+        }else if (contractType.equalsIgnoreCase("Sale")){
+            System.out.print("Wold you like to finance? (yes/no): ");
+            String financeInput = scannerLine.nextLine().trim();
+
+            if (financeInput.equalsIgnoreCase("yes")){
+                SalesContract salesContract = new SalesContract(vehicleSoldDate, customerName, customerEmail, vehicle, true );
+                ContractFileManager.saveContract(salesContract);
+                System.out.println("Contract Saved");
+                contractVehicleRemoval(vin);
+
+            } else if (financeInput.equalsIgnoreCase("no")) {
+                SalesContract salesContract = new SalesContract(vehicleSoldDate,customerName, customerEmail, vehicle, false);
+                ContractFileManager.saveContract(salesContract);
+                System.out.println("Contract Saved");
+                contractVehicleRemoval(vin);
+
+            } else System.out.println("Invalid option");
+
+        }else System.out.println("Invalid option");
 
 
     }
